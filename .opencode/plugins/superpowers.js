@@ -11,6 +11,7 @@ import os from 'os';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+let cachedBootstrapContent = undefined;
 
 // Simple frontmatter extraction (avoid dependency on skills-core for bootstrap)
 const extractAndStripFrontmatter = (content) => {
@@ -54,9 +55,14 @@ export const SuperpowersPlugin = async ({ client, directory }) => {
 
   // Helper to generate bootstrap content
   const getBootstrapContent = () => {
+    if (cachedBootstrapContent !== undefined) return cachedBootstrapContent;
+
     // Try to load using-superpowers skill
     const skillPath = path.join(superpowersSkillsDir, 'using-superpowers', 'SKILL.md');
-    if (!fs.existsSync(skillPath)) return null;
+    if (!fs.existsSync(skillPath)) {
+      cachedBootstrapContent = null;
+      return cachedBootstrapContent;
+    }
 
     const fullContent = fs.readFileSync(skillPath, 'utf8');
     const { content } = extractAndStripFrontmatter(fullContent);
@@ -70,15 +76,16 @@ When skills reference tools you don't have, substitute OpenCode equivalents:
 
 Use OpenCode's native \`skill\` tool to list and load skills.`;
 
-    return `<EXTREMELY_IMPORTANT>
+    cachedBootstrapContent = `<EXTREMELY_IMPORTANT>
 You have superpowers.
 
-**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Do NOT use the skill tool to load "using-superpowers" again - that would be redundant.**
+**IMPORTANT: The using-superpowers skill content is included below. It is ALREADY LOADED - you are currently following it. Use the skill tool for other skills.**
 
 ${content}
 
 ${toolMapping}
 </EXTREMELY_IMPORTANT>`;
+    return cachedBootstrapContent;
   };
 
   return {

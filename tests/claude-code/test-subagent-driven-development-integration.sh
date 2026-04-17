@@ -11,12 +11,12 @@ echo " Integration Test: subagent-driven-development"
 echo "========================================"
 echo ""
 echo "This test executes a real plan using the skill and verifies:"
-echo "  1. Plan is read once (not per task)"
+echo "  1. Plan is read once at the beginning"
 echo "  2. Full task text provided to subagents"
 echo "  3. Subagents perform self-review"
-echo "  4. Spec compliance review before code quality"
-echo "  5. Review loops when issues found"
-echo "  6. Spec reviewer reads code independently"
+echo "  4. Spec compliance review before code quality when both are needed"
+echo "  5. Focused rechecks for blocking review issues"
+echo "  6. Adaptive review based on task risk"
 echo ""
 echo "WARNING: This test may take 10-30 minutes to complete."
 echo ""
@@ -125,10 +125,10 @@ I want you to execute the implementation plan at docs/superpowers/plans/implemen
 
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
 1. Read the plan once at the beginning
-2. Provide full task text to subagents (don't make them read files)
+2. Provide full task text to subagents directly
 3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
-5. Use review loops when issues are found
+4. Run spec compliance review before code quality review when both are needed
+5. Use focused rechecks for blocking review issues
 
 Begin now. Execute the plan.
 EOF
@@ -140,10 +140,10 @@ PROMPT="Change to directory $TEST_PROJECT and then execute the implementation pl
 
 IMPORTANT: Follow the skill exactly. I will be verifying that you:
 1. Read the plan once at the beginning
-2. Provide full task text to subagents (don't make them read files)
+2. Provide full task text to subagents directly
 3. Ensure subagents do self-review before reporting
-4. Run spec compliance review before code quality review
-5. Use review loops when issues are found
+4. Run spec compliance review before code quality review when both are needed
+5. Use focused rechecks for blocking review issues
 
 Begin now. Execute the plan."
 
@@ -267,10 +267,10 @@ else
 fi
 echo ""
 
-# Test 8: Check for extra features (spec compliance should catch)
-echo "Test 8: No extra features added (spec compliance)..."
+# Test 8: Check for extra features (adaptive review/verification should catch)
+echo "Test 8: Scope stays focused..."
 if grep -q "export function divide\|export function power\|export function subtract" "$TEST_PROJECT/src/math.js" 2>/dev/null; then
-    echo "  [WARN] Extra features found (spec review should have caught this)"
+    echo "  [WARN] Extra features found (adaptive review/verification should catch this)"
     # Not failing on this as it tests reviewer effectiveness
 else
     echo "  [PASS] No extra features added"
@@ -299,8 +299,8 @@ if [ $FAILED -eq 0 ]; then
     echo "  ✓ Reads plan once at start"
     echo "  ✓ Provides full task text to subagents"
     echo "  ✓ Enforces self-review"
-    echo "  ✓ Runs spec compliance before code quality"
-    echo "  ✓ Spec reviewer verifies independently"
+    echo "  ✓ Runs spec compliance before code quality when both are needed"
+    echo "  ✓ Uses adaptive review"
     echo "  ✓ Produces working implementation"
     exit 0
 else

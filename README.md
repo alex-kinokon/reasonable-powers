@@ -1,58 +1,30 @@
 # Superpowers
 
-Superpowers is a complete software development methodology for your coding agents, built on top of a set of composable skills and some initial instructions that make sure your agent uses them.
+Superpowers is a lightweight set of coding-agent skills for planning, testing,
+debugging, review, and branch finishing. It helps agents choose the right amount
+of process for the task instead of forcing every request through the same
+workflow.
 
 ## How it works
 
-It starts from the moment you fire up your coding agent. As soon as it sees that you're building something, it *doesn't* just jump into trying to write code. Instead, it steps back and asks you what you're really trying to do. 
+The agent starts by triaging the work. A tiny doc fix or obvious one-file patch
+stays direct. A medium feature gets a short plan. A high-risk change can still
+get a design note, task contracts, isolated work, tests, and review.
 
-Once it's teased a spec out of the conversation, it shows it to you in chunks short enough to actually read and digest. 
+The skills are composable. `brainstorming` clarifies unclear work,
+`writing-plans` turns approved designs into task contracts,
+`test-driven-development` keeps behavior changes test-first, and
+`subagent-driven-development` uses subagents only where fresh context or review
+reduces real risk.
 
-After you've signed off on the design, your agent puts together an implementation plan that's clear enough for an enthusiastic junior engineer with poor taste, no judgement, no project context, and an aversion to testing to follow. It emphasizes true red/green TDD, YAGNI (You Aren't Gonna Need It), and DRY. 
-
-Next up, once you say "go", it launches a *subagent-driven-development* process, having agents work through each engineering task, inspecting and reviewing their work, and continuing forward. It's not uncommon for Claude to be able to work autonomously for a couple hours at a time without deviating from the plan you put together.
-
-There's a bunch more to it, but that's the core of the system. And because the skills trigger automatically, you don't need to do anything special. Your coding agent just has Superpowers.
-
-
-## Sponsorship
-
-If Superpowers has helped you do stuff that makes money and you are so inclined, I'd greatly appreciate it if you'd consider [sponsoring my opensource work](https://github.com/sponsors/obra).
-
-Thanks! 
-
-- Jesse
+The goal is simple: keep the reliability benefits of structured agent workflows
+while cutting token burn, review loops, surprise worktrees, and unnecessary
+planning ceremony.
 
 
 ## Installation
 
-**Note:** Installation differs by platform. 
-
-### Claude Code Official Marketplace
-
-Superpowers is available via the [official Claude plugin marketplace](https://claude.com/plugins/superpowers)
-
-Install the plugin from Anthropic's official marketplace:
-
-```bash
-/plugin install superpowers@claude-plugins-official
-```
-
-### Claude Code (Superpowers Marketplace)
-
-The Superpowers marketplace provides Superpowers and some other related plugins for Claude Code.
-
-In Claude Code, register the marketplace first:
-
-```bash
-/plugin marketplace add obra/superpowers-marketplace
-```
-
-Then install the plugin from this marketplace:
-
-```bash
-/plugin install superpowers@superpowers-marketplace
-```
+**Note:** Installation differs by platform.
 
 ### OpenAI Codex CLI
 
@@ -73,7 +45,7 @@ Select `Install Plugin`
 ### OpenAI Codex App
 
 - In the Codex app, click on Plugins in the sidebar.
-- You should see `Superpowers` in the Coding section. 
+- You should see `Superpowers` in the Coding section.
 - Click the `+` next to Superpowers and follow the prompts.
 
 
@@ -92,7 +64,7 @@ or search for "superpowers" in the plugin marketplace.
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/obra/superpowers/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinokon/superpowers-lite/refs/heads/main/.opencode/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
@@ -100,14 +72,14 @@ Fetch and follow instructions from https://raw.githubusercontent.com/obra/superp
 ### GitHub Copilot CLI
 
 ```bash
-copilot plugin marketplace add obra/superpowers-marketplace
+copilot plugin marketplace add alex-kinokon/superpowers-lite-marketplace
 copilot plugin install superpowers@superpowers-marketplace
 ```
 
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/obra/superpowers
+gemini extensions install https://github.com/alex-kinokon/superpowers-lite
 ```
 
 To update:
@@ -118,21 +90,21 @@ gemini extensions update superpowers
 
 ## The Basic Workflow
 
-1. **brainstorming** - Activates before writing code. Refines rough ideas through questions, explores alternatives, presents design in sections for validation. Saves design document.
+1. **brainstorming** - Available for medium or larger unclear work. Refines rough ideas through questions, explores alternatives, and writes a design document when it helps.
 
-2. **using-git-worktrees** - Activates after design approval. Creates isolated workspace on new branch, runs project setup, verifies clean test baseline.
+2. **using-git-worktrees** - Available when isolated branch work is useful. Creates isolated workspace on request, runs project setup, verifies clean test baseline.
 
-3. **writing-plans** - Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.
+3. **writing-plans** - Activates for medium or larger approved designs. Writes task contracts with exact file paths, acceptance criteria, and verification steps.
 
-4. **subagent-driven-development** or **executing-plans** - Activates with plan. Dispatches fresh subagent per task with two-stage review (spec compliance, then code quality), or executes in batches with human checkpoints.
+4. **subagent-driven-development** or **executing-plans** - Activates with a plan. Uses inline execution for small work, subagents where isolation helps, and adaptive review where risk justifies it.
 
-5. **test-driven-development** - Activates during implementation. Enforces RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, commit. Deletes code written before tests.
+5. **test-driven-development** - Available for behavior changes. Uses RED-GREEN-REFACTOR: write failing test, watch it fail, write minimal code, watch it pass, then refactor.
 
-6. **requesting-code-review** - Activates between tasks. Reviews against plan, reports issues by severity. Critical issues block progress.
+6. **requesting-code-review** - Available for risky or broad changes. Reviews focused scope and reports issues by severity.
 
 7. **finishing-a-development-branch** - Activates when tasks complete. Verifies tests, presents options (merge/PR/keep/discard), cleans up worktree.
 
-**The agent checks for relevant skills before any task.** Mandatory workflows, not suggestions.
+**The agent triages each task before choosing workflow weight.** Skills scale up when risk justifies them.
 
 ## What's Inside
 
@@ -143,18 +115,15 @@ gemini extensions update superpowers
 
 **Debugging**
 - **systematic-debugging** - 4-phase root cause process (includes root-cause-tracing, defense-in-depth, condition-based-waiting techniques)
-- **verification-before-completion** - Ensure it's actually fixed
 
 **Collaboration** 
 - **brainstorming** - Socratic design refinement
-- **writing-plans** - Detailed implementation plans
+- **writing-plans** - Contract-based implementation plans
 - **executing-plans** - Batch execution with checkpoints
-- **dispatching-parallel-agents** - Concurrent subagent workflows
 - **requesting-code-review** - Pre-review checklist
-- **receiving-code-review** - Responding to feedback
-- **using-git-worktrees** - Parallel development branches
+- **using-git-worktrees** - Optional isolated development branches
 - **finishing-a-development-branch** - Merge/PR decision workflow
-- **subagent-driven-development** - Fast iteration with two-stage review (spec compliance, then code quality)
+- **subagent-driven-development** - Adaptive subagent execution and review
 
 **Meta**
 - **writing-skills** - Create new skills following best practices (includes testing methodology)
@@ -162,16 +131,14 @@ gemini extensions update superpowers
 
 ## Philosophy
 
-- **Test-Driven Development** - Write tests first, always
+- **Test-Driven Development** - Write tests first for behavior changes
 - **Systematic over ad-hoc** - Process over guessing
 - **Complexity reduction** - Simplicity as primary goal
 - **Evidence over claims** - Verify before declaring success
 
-Read [the original release announcement](https://blog.fsck.com/2025/10/09/superpowers/).
-
 ## Contributing
 
-The general contribution process for Superpowers is below. Keep in mind that we don't generally accept contributions of new skills and that any updates to skills must work across all of the coding agents we support.
+The general contribution process for Superpowers is below. We accept new skills when they are broadly useful, well tested, and appropriate for all supported coding agents.
 
 1. Fork the repository
 2. Switch to the 'dev' branch
@@ -189,10 +156,6 @@ Superpowers updates are somewhat coding-agent dependent, but are often automatic
 
 MIT License - see LICENSE file for details
 
-## Community
+## Project
 
-Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of the folks at [Prime Radiant](https://primeradiant.com).
-
-- **Discord**: [Join us](https://discord.gg/35wsABTejz) for community support, questions, and sharing what you're building with Superpowers
-- **Issues**: https://github.com/obra/superpowers/issues
-- **Release announcements**: [Sign up](https://primeradiant.com/superpowers/) to get notified about new versions
+- **Issues**: https://github.com/alex-kinokon/superpowers-lite/issues

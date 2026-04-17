@@ -78,5 +78,15 @@ else
     exit 1
 fi
 
+# Test 7: Verify bootstrap content is cached between transform calls
+echo "Test 7: Checking bootstrap cache..."
+if grep -q "cachedBootstrapContent" "$SUPERPOWERS_PLUGIN_FILE" && \
+   grep -q "cachedBootstrapContent !== undefined" "$SUPERPOWERS_PLUGIN_FILE"; then
+    echo "  [PASS] Bootstrap content is cached"
+else
+    echo "  [FAIL] Bootstrap content cache not found"
+    exit 1
+fi
+
 echo ""
 echo "=== All plugin loading tests passed ==="

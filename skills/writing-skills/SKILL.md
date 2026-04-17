@@ -151,15 +151,15 @@ Concrete results
 
 The description should ONLY describe triggering conditions. Do NOT summarize the skill's process or workflow in the description.
 
-**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Claude may follow the description instead of reading the full skill content. A description saying "code review between tasks" caused Claude to do ONE review, even though the skill's flowchart clearly showed TWO reviews (spec compliance then code quality).
+**Why this matters:** Testing revealed that when a description summarizes the skill's workflow, Claude may follow the description instead of reading the full skill content. A description with process details caused Claude to run a simplified path even when the skill body required a more specific sequence.
 
-When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Claude correctly read the flowchart and followed the two-stage review process.
+When the description was changed to just "Use when executing implementation plans with independent tasks" (no workflow summary), Claude correctly read the skill body and followed the intended process.
 
 **The trap:** Descriptions that summarize workflow create a shortcut Claude will take. The skill body becomes documentation Claude skips.
 
 ```yaml
 # ❌ BAD: Summarizes workflow - Claude may follow this instead of reading skill
-description: Use when executing plans - dispatches subagent per task with code review between tasks
+description: Use when executing plans - assign work, review results, and finish the branch
 
 # ❌ BAD: Too much process detail
 description: Use for TDD - write test first, watch it fail, write minimal code, refactor
@@ -371,26 +371,19 @@ pptx/
 ```
 When: Reference material too large for inline
 
-## The Iron Law (Same as TDD)
+## Validation Level
 
-```
-NO SKILL WITHOUT A FAILING TEST FIRST
-```
+Match validation to the risk of the skill change:
 
-This applies to NEW skills AND EDITS to existing skills.
+| Change type | Validation |
+|-------------|------------|
+| Typo, wording clarity, stale reference | Static grep/checks plus affected tests |
+| Trigger/description change | Trigger test or explicit skill-request test |
+| Behavior-shaping content | Pressure scenario before/after comparison |
+| New skill or major rewrite | Full pressure testing with baseline failure |
 
-Write skill before testing? Delete it. Start over.
-Edit skill without testing? Same violation.
-
-**No exceptions:**
-- Not for "simple additions"
-- Not for "just adding a section"
-- Not for "documentation updates"
-- Don't keep untested changes as "reference"
-- Don't "adapt" while running tests
-- Delete means delete
-
-**REQUIRED BACKGROUND:** The superpowers:test-driven-development skill explains why this matters. Same principles apply to documentation.
+The principle from `superpowers:test-driven-development` still applies:
+behavioral claims need evidence. Small maintenance edits can use small evidence.
 
 ## Testing All Skill Types
 
@@ -398,7 +391,7 @@ Different skill types need different test approaches:
 
 ### Discipline-Enforcing Skills (rules/requirements)
 
-**Examples:** TDD, verification-before-completion, designing-before-coding
+**Examples:** TDD, designing-before-coding
 
 **Test with:**
 - Academic questions: Do they understand the rules?
@@ -580,22 +573,16 @@ step2 [label="read file"];
 helper1, helper2, step3, pattern4
 **Why bad:** Labels should have semantic meaning
 
-## STOP: Before Moving to Next Skill
+## Before Moving To The Next Skill
 
-**After writing ANY skill, you MUST STOP and complete the deployment process.**
-
-**Do NOT:**
-- Create multiple skills in batch without testing each
-- Move to next skill before current one is verified
-- Skip testing because "batching is more efficient"
-
-**The deployment checklist below is MANDATORY for EACH skill.**
-
-Deploying untested skills = deploying untested code. It's a violation of quality standards.
+After changing a skill, run the validation level that fits the change. Batch
+low-risk maintenance edits when one static check covers them. Validate
+behavioral rewrites independently.
 
 ## Skill Creation Checklist (TDD Adapted)
 
-**IMPORTANT: Use TodoWrite to create todos for EACH checklist item below.**
+Use this checklist for new skills or behavior-shaping rewrites. For small
+maintenance edits, use the Validation Level table above.
 
 **RED Phase - Write Failing Test:**
 - [ ] Create pressure scenarios (3+ combined pressures for discipline skills)

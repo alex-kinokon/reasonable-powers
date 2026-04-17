@@ -98,14 +98,13 @@ generate_plugin_json() {
 {
   "name": "superpowers",
   "version": "$version",
-  "description": "An agentic skills framework & software development methodology that works: planning, TDD, debugging, and collaboration workflows.",
+  "description": "A lightweight coding-agent skills framework for proportionate planning, TDD, debugging, and review workflows.",
   "author": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com",
-    "url": "https://github.com/obra"
+    "name": "superpowers-lite maintainers",
+    "url": "https://github.com/alex-kinokon"
   },
-  "homepage": "https://github.com/obra/superpowers",
-  "repository": "https://github.com/obra/superpowers",
+  "homepage": "https://github.com/alex-kinokon/superpowers-lite",
+  "repository": "https://github.com/alex-kinokon/superpowers-lite",
   "license": "MIT",
   "keywords": [
     "brainstorming",
@@ -121,8 +120,8 @@ generate_plugin_json() {
   "interface": {
     "displayName": "Superpowers",
     "shortDescription": "Planning, TDD, debugging, and delivery workflows for coding agents",
-    "longDescription": "Use Superpowers to guide agent work through brainstorming, implementation planning, test-driven development, systematic debugging, parallel execution, code review, and finish-the-branch workflows.",
-    "developerName": "Jesse Vincent",
+    "longDescription": "Use Superpowers to guide agent work through brainstorming, implementation planning, test-driven development, systematic debugging, code review, and finish-the-branch workflows.",
+    "developerName": "superpowers-lite maintainers",
     "category": "Coding",
     "capabilities": [
       "Interactive",
@@ -350,7 +349,7 @@ if [[ $BOOTSTRAP -eq 1 ]]; then
 Creates \`plugins/superpowers/\` from scratch: upstream content via rsync, \`.codex-plugin/plugin.json\` regenerated inline, brand assets seeded from a local Brand Assets directory.
 
 Run via: \`scripts/sync-to-codex-plugin.sh --bootstrap --assets-src <path>\`
-Upstream commit: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream commit: https://github.com/alex-kinokon/superpowers-lite/commit/$UPSTREAM_SHA
 
 This is a one-time bootstrap. Subsequent syncs will be normal (non-bootstrap) runs and will not touch the \`assets/\` directory."
 else
@@ -358,7 +357,7 @@ else
   PR_BODY="Automated sync from superpowers upstream \`main\` @ \`$UPSTREAM_SHORT\` (v$UPSTREAM_VERSION).
 
 Run via: \`scripts/sync-to-codex-plugin.sh\`
-Upstream commit: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream commit: https://github.com/alex-kinokon/superpowers-lite/commit/$UPSTREAM_SHA
 
 Running the sync tool again against the same upstream SHA should produce a PR with an identical diff — use that to verify the tool is behaving."
 fi
@@ -366,7 +365,7 @@ fi
 git commit --quiet -m "$COMMIT_TITLE
 
 Automated sync via scripts/sync-to-codex-plugin.sh
-Upstream: https://github.com/obra/superpowers/commit/$UPSTREAM_SHA
+Upstream: https://github.com/alex-kinokon/superpowers-lite/commit/$UPSTREAM_SHA
 Branch:   $SYNC_BRANCH"
 
 echo "Pushing $SYNC_BRANCH to $FORK..."

@@ -44,11 +44,11 @@ cd tests/claude-code
 The integration test verifies the `subagent-driven-development` skill correctly:
 
 1. **Plan Loading**: Reads the plan once at the beginning
-2. **Full Task Text**: Provides complete task descriptions to subagents (doesn't make them read files)
+2. **Full Task Text**: Provides complete task descriptions to subagents directly
 3. **Self-Review**: Ensures subagents perform self-review before reporting
-4. **Review Order**: Runs spec compliance review before code quality review
-5. **Review Loops**: Uses review loops when issues are found
-6. **Independent Verification**: Spec reviewer reads code independently, doesn't trust implementer reports
+4. **Review Order**: Runs spec compliance review before code quality review when both are needed
+5. **Focused Rechecks**: Rechecks blocking issues without turning minor comments into full loops
+6. **Adaptive Review**: Uses independent review where task risk justifies it
 
 ### How It Works
 
@@ -78,7 +78,7 @@ Test 1: Skill tool invoked...
   [PASS] subagent-driven-development skill was invoked
 
 Test 2: Subagents dispatched...
-  [PASS] 7 subagents dispatched
+  [PASS] Subagents dispatched for tasks that need isolation
 
 Test 3: Task tracking...
   [PASS] TodoWrite used 5 time(s)
@@ -93,8 +93,8 @@ Test 6: Implementation verification...
 Test 7: Git commit history...
   [PASS] Multiple commits created (3 total)
 
-Test 8: No extra features added...
-  [PASS] No extra features added
+Test 8: Scope stays focused...
+  [PASS] Scope stayed focused
 
 =========================================
  Token Usage Analysis

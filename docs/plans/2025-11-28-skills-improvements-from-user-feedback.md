@@ -34,7 +34,7 @@ Two Claude instances provided detailed feedback from actual development sessions
 - **BUT** response contained `"model": "claude-sonnet-4-20250514"` - was actually using Anthropic
 
 **Root cause:**
-`verification-before-completion` checks operations succeed but not that outcomes reflect intended configuration changes.
+Completion checks verified operations succeeded but missed whether outcomes reflected intended configuration changes.
 
 **Impact:** High - False confidence in integration tests, bugs ship to production
 
@@ -183,7 +183,7 @@ No enforcement that subagents read relevant skills. No prompt includes skill rea
 
 ## Proposed Improvements
 
-### 1. verification-before-completion: Add Configuration Change Verification
+### 1. Add Configuration Change Verification
 
 **Add new section:**
 
@@ -564,10 +564,10 @@ Slightly more complex prompt, but faster end-to-end.
 
 ### Phase 1: High-Impact, Low-Risk (Do First)
 
-1. **verification-before-completion: Configuration change verification**
+1. **Configuration change verification**
    - Clear addition, doesn't change existing content
    - Addresses high-impact problem (false confidence in tests)
-   - File: `skills/verification-before-completion/SKILL.md`
+   - File: completion verification guidance
 
 2. **testing-anti-patterns: Mock-interface drift**
    - Adds new anti-pattern, doesn't modify existing
@@ -695,7 +695,7 @@ How do we know these improvements work?
 ## Recommendation
 
 **Proceed with Phase 1 immediately:**
-- verification-before-completion: Configuration change verification
+- Configuration change verification
 - testing-anti-patterns: Mock-interface drift
 - requesting-code-review: Explicit file reading
 

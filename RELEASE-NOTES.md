@@ -108,7 +108,7 @@ Dramatically reduces token usage and speeds up spec and plan reviews by eliminat
 
 ### Subagent Context Isolation
 
-- All delegation skills (brainstorming, dispatching-parallel-agents, requesting-code-review, subagent-driven-development, writing-plans) now include context isolation principle
+- All delegation skills (brainstorming, requesting-code-review, subagent-driven-development, writing-plans) now include context isolation principle
 - Subagents receive only the context they need, preventing context window pollution
 
 ## v5.0.1 (2026-03-10)
@@ -498,10 +498,6 @@ Fixed a confusing pattern where Claude would invoke a skill via the Skill tool, 
 - Changed "read the skill" → "invoke the skill" in instructions
 - Updated slash commands to use fully qualified skill names (e.g., `superpowers:brainstorming`)
 
-**Added GitHub thread reply guidance to receiving-code-review** (h/t @ralphbean)
-
-Added a note about replying to inline review comments in the original thread rather than as top-level PR comments.
-
 **Added automation-over-documentation guidance to writing-skills** (h/t @EthanJStark)
 
 Added guidance that mechanical constraints should be automated, not documented—save skills for judgment calls.
@@ -716,9 +712,7 @@ The Skill tool is the proper mechanism for invoking skills in Claude Code. This 
 ### Improvements
 
 **Strengthened using-superpowers skill against agent rationalization**
-- Added EXTREMELY-IMPORTANT block with absolute language about mandatory skill checking
-  - "If even 1% chance a skill applies, you MUST read it"
-  - "You do not have a choice. You cannot rationalize your way out."
+- Added stronger mandatory skill-checking language
 - Added MANDATORY FIRST RESPONSE PROTOCOL checklist
   - 5-step process agents must complete before any response
   - Explicit "responding without this = failure" consequence
@@ -830,7 +824,6 @@ These changes address observed agent behavior where they rationalize around skil
 
 - **Re-added missing command redirects** - Restored `commands/brainstorm.md` and `commands/write-plan.md` that were accidentally removed in v3.0 migration
 - Fixed `defense-in-depth` name mismatch (was `Defense-in-Depth-Validation`)
-- Fixed `receiving-code-review` name mismatch (was `Code-Review-Reception`)
 - Fixed `commands/brainstorm.md` reference to correct skill name
 - Removed references to non-existent related skills
 

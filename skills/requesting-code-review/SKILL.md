@@ -1,105 +1,104 @@
 ---
 name: requesting-code-review
-description: Use when completing tasks, implementing major features, or before merging to verify work meets requirements
+description: Use when a completed change is high-risk, broad, security-sensitive, or ready for final review before merge
 ---
 
 # Requesting Code Review
 
-Dispatch superpowers:code-reviewer subagent to catch issues before they cascade. The reviewer gets precisely crafted context for evaluation — never your session's history. This keeps the reviewer focused on the work product, not your thought process, and preserves your own context for continued work.
+Use an independent reviewer when review is likely to catch defects that local
+verification may miss. Keep review focused and proportional to risk.
 
-**Core principle:** Review early, review often.
+**Core principle:** Review where it reduces real risk.
 
-## When to Request Review
+## When To Request Review
 
-**Mandatory:**
-- After each task in subagent-driven development
-- After completing major feature
-- Before merge to main
+Request review for:
+- auth, permissions, billing, data migration, data loss, or security-sensitive changes
+- public APIs, cross-module architecture, or broad refactors
+- large features after implementation
+- final review before merge/PR when the change is non-trivial
+- work where you are uncertain after verification
 
-**Optional but valuable:**
-- When stuck (fresh perspective)
-- Before refactoring (baseline check)
-- After fixing complex bug
+Use self-review plus tests for:
+- tiny mechanical edits
+- low-risk single-file changes
+- literal docs/config updates
+- reviewer comments that are Minor and easy to assess locally
 
-## How to Request
+## How To Request
 
-**1. Get git SHAs:**
+### 1. Identify Scope
+
+Collect:
+- what changed
+- why it changed
+- requirements or task contract
+- base and head SHAs
+- specific review focus
+
 ```bash
-BASE_SHA=$(git rev-parse HEAD~1)  # or origin/main
+BASE_SHA=$(git merge-base HEAD main 2>/dev/null || git rev-parse HEAD~1)
 HEAD_SHA=$(git rev-parse HEAD)
 ```
 
-**2. Dispatch code-reviewer subagent:**
+### 2. Dispatch Reviewer
 
-Use Task tool with superpowers:code-reviewer type, fill template at `code-reviewer.md`
+Use the `superpowers:code-reviewer` prompt from `code-reviewer.md`.
 
-**Placeholders:**
-- `{WHAT_WAS_IMPLEMENTED}` - What you just built
-- `{PLAN_OR_REQUIREMENTS}` - What it should do
-- `{BASE_SHA}` - Starting commit
-- `{HEAD_SHA}` - Ending commit
-- `{DESCRIPTION}` - Brief summary
+Fill:
+- `{WHAT_WAS_IMPLEMENTED}`
+- `{PLAN_OR_REQUIREMENTS}`
+- `{BASE_SHA}`
+- `{HEAD_SHA}`
+- `{DESCRIPTION}`
 
-**3. Act on feedback:**
-- Fix Critical issues immediately
-- Fix Important issues before proceeding
-- Note Minor issues for later
-- Push back if reviewer is wrong (with reasoning)
+Add a focused review instruction when useful:
+
+```text
+Review focus: authorization boundaries and tenant isolation.
+```
+
+### 3. Act On Feedback
+
+- **Critical:** fix before proceeding.
+- **Important:** fix before merge unless there is a clear technical reason to defer.
+- **Minor:** fix if cheap, otherwise note as non-blocking.
+- **Incorrect feedback:** push back with code, tests, or repository context.
+
+Use focused re-checks for blocking fixes. A full second review is useful only
+when the fix changes the shape of the implementation.
+
+## Workflow Integration
+
+**Subagent-driven development:** Use the review policy in
+`superpowers:subagent-driven-development`. This skill supplies the review
+template when that policy says independent review is warranted.
+
+**Executing plans:** Review after a risky task, a meaningful batch, or the final
+implementation. Implement task contracts and verification first.
+
+**Ad-hoc development:** Review before merge when the diff is broad, risky, or
+hard to validate with tests alone.
 
 ## Example
 
-```
-[Just completed Task 2: Add verification function]
-
-You: Let me request code review before proceeding.
-
-BASE_SHA=$(git log --oneline | grep "Task 1" | head -1 | awk '{print $1}')
-HEAD_SHA=$(git rev-parse HEAD)
-
-[Dispatch superpowers:code-reviewer subagent]
-  WHAT_WAS_IMPLEMENTED: Verification and repair functions for conversation index
-  PLAN_OR_REQUIREMENTS: Task 2 from docs/superpowers/plans/deployment-plan.md
-  BASE_SHA: a7981ec
-  HEAD_SHA: 3df7661
-  DESCRIPTION: Added verifyIndex() and repairIndex() with 4 issue types
-
-[Subagent returns]:
-  Strengths: Clean architecture, real tests
-  Issues:
-    Important: Missing progress indicators
-    Minor: Magic number (100) for reporting interval
-  Assessment: Ready to proceed
-
-You: [Fix progress indicators]
-[Continue to Task 3]
+```text
+Task: Add billing report download authorization
+Risk: authorization + sensitive data
+Review focus: ownership checks, tenant isolation, error behavior
+Base: a7981ec
+Head: 3df7661
 ```
 
-## Integration with Workflows
+Reviewer returns:
 
-**Subagent-Driven Development:**
-- Review after EACH task
-- Catch issues before they compound
-- Fix before moving to next task
+```text
+Issues:
+- Important: export endpoint checks role but not tenant ownership.
+- Minor: error message could be clearer.
+```
 
-**Executing Plans:**
-- Review after each batch (3 tasks)
-- Get feedback, apply, continue
+Fix the Important issue, re-check ownership behavior, and decide whether the
+Minor message change is worth doing now.
 
-**Ad-Hoc Development:**
-- Review before merge
-- Review when stuck
-
-## Red Flags
-
-**Never:**
-- Skip review because "it's simple"
-- Ignore Critical issues
-- Proceed with unfixed Important issues
-- Argue with valid technical feedback
-
-**If reviewer wrong:**
-- Push back with technical reasoning
-- Show code/tests that prove it works
-- Request clarification
-
-See template at: requesting-code-review/code-reviewer.md
+See template at: `requesting-code-review/code-reviewer.md`

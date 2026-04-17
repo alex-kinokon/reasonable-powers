@@ -28,10 +28,10 @@ fi
 
 echo ""
 
-# Test 2: Verify skill describes correct workflow order
-echo "Test 2: Workflow ordering..."
+# Test 2: Verify adaptive review order
+echo "Test 2: Adaptive review ordering..."
 
-output=$(run_claude "In the subagent-driven-development skill, what comes first: spec compliance review or code quality review? Be specific about the order." 30)
+output=$(run_claude "In the subagent-driven-development skill, when both spec compliance and code quality review are needed, what order should they run in?" 30)
 
 if assert_order "$output" "spec.*compliance" "code.*quality" "Spec compliance before code quality"; then
     : # pass
@@ -79,18 +79,18 @@ fi
 
 echo ""
 
-# Test 5: Verify spec compliance reviewer is skeptical
-echo "Test 5: Spec compliance reviewer mindset..."
+# Test 5: Verify review is risk-based
+echo "Test 5: Risk-based review policy..."
 
-output=$(run_claude "What is the spec compliance reviewer's attitude toward the implementer's report in subagent-driven-development?" 30)
+output=$(run_claude "In subagent-driven-development, should every low-risk task receive both a spec compliance reviewer and a code quality reviewer? What review policy should be used?" 30)
 
-if assert_contains "$output" "not trust\|don't trust\|skeptical\|verify.*independently\|suspiciously" "Reviewer is skeptical"; then
+if assert_contains "$output" "adaptive\|risk\|where.*risk\|review.*needed\|high-risk\|low-risk" "Mentions adaptive/risk-based review"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_contains "$output" "read.*code\|inspect.*code\|verify.*code" "Reviewer reads code"; then
+if assert_contains "$output" "spec.*before.*code.*quality\|spec compliance.*first\|scope.*before.*quality" "Keeps spec before quality when both are used"; then
     : # pass
 else
     exit 1
@@ -98,18 +98,18 @@ fi
 
 echo ""
 
-# Test 6: Verify review loops
-echo "Test 6: Review loop requirements..."
+# Test 6: Verify focused re-review
+echo "Test 6: Focused re-review requirements..."
 
-output=$(run_claude "In subagent-driven-development, what happens if a reviewer finds issues? Is it a one-time review or a loop?" 30)
+output=$(run_claude "In subagent-driven-development, what happens if a reviewer finds Critical, Important, or Minor issues?" 30)
 
-if assert_contains "$output" "loop\|again\|repeat\|until.*approved\|until.*compliant" "Review loops mentioned"; then
+if assert_contains "$output" "Critical\|Important\|blocking\|fix.*re-review\|focused.*re-check" "Blocking issues get fixed and re-checked"; then
     : # pass
 else
     exit 1
 fi
 
-if assert_contains "$output" "implementer.*fix\|fix.*issues" "Implementer fixes issues"; then
+if assert_contains "$output" "Minor\|non-blocking\|note\|cheap" "Minor issues are handled lightly"; then
     : # pass
 else
     exit 1
@@ -136,12 +136,12 @@ fi
 
 echo ""
 
-# Test 8: Verify worktree requirement
-echo "Test 8: Worktree requirement..."
+# Test 8: Verify worktree choice
+echo "Test 8: Worktree choice..."
 
-output=$(run_claude "What workflow skills are required before using subagent-driven-development? List any prerequisites or required skills." 30)
+output=$(run_claude "What does subagent-driven-development say about using git worktrees before execution?" 30)
 
-if assert_contains "$output" "using-git-worktrees\|worktree" "Mentions worktree requirement"; then
+if assert_contains "$output" "ask\|optional\|consent\|preference\|project config\|user" "Worktree is choice/config driven"; then
     : # pass
 else
     exit 1
@@ -154,7 +154,7 @@ echo "Test 9: Main branch red flag..."
 
 output=$(run_claude "In subagent-driven-development, is it okay to start implementation directly on the main branch?" 30)
 
-if assert_contains "$output" "worktree\|feature.*branch\|not.*main\|never.*main\|avoid.*main\|don't.*main\|consent\|permission" "Warns against main branch"; then
+if assert_contains "$output" "worktree\|feature.*branch\|consent\|permission\|ask\|user" "Requires user consent or explicit branch choice"; then
     : # pass
 else
     exit 1
