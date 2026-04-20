@@ -29,9 +29,9 @@ pass "Removed orphan skills are absent"
 
 if rg -n "$removed_pattern" \
   README.md skills docs/README.codex.md docs/testing.md scripts tests \
-  >/tmp/superpowers-lite-removed-skill-refs.txt
+  >/tmp/superpowers-removed-skill-refs.txt
 then
-  cat /tmp/superpowers-lite-removed-skill-refs.txt >&2
+  cat /tmp/superpowers-removed-skill-refs.txt >&2
   fail "Removed skill references found"
 fi
 pass "Removed skill names are not referenced in active docs/tests"
@@ -40,8 +40,8 @@ if [ -e commands ]; then
   fail "legacy Claude command directory still exists"
 fi
 
-if rg -n '"commands"' .claude-plugin .cursor-plugin package.json >/tmp/superpowers-lite-command-refs.txt; then
-  cat /tmp/superpowers-lite-command-refs.txt >&2
+if rg -n '"commands"' .claude-plugin .cursor-plugin package.json >/tmp/superpowers-command-refs.txt; then
+  cat /tmp/superpowers-command-refs.txt >&2
   fail "Plugin manifests still advertise commands"
 fi
 pass "Legacy command surface is absent"
@@ -57,9 +57,9 @@ heavy_bootstrap_patterns=(
 for pattern in "${heavy_bootstrap_patterns[@]}"; do
   if rg -n "$pattern" \
     skills/using-superpowers/SKILL.md skills/brainstorming/SKILL.md README.md \
-    >/tmp/superpowers-lite-heavy-bootstrap.txt
+    >/tmp/superpowers-heavy-bootstrap.txt
   then
-    cat /tmp/superpowers-lite-heavy-bootstrap.txt >&2
+    cat /tmp/superpowers-heavy-bootstrap.txt >&2
     fail "Heavy bootstrap/brainstorming language found"
   fi
 done
@@ -81,9 +81,9 @@ heavy_execution_patterns=(
 for pattern in "${heavy_execution_patterns[@]}"; do
   if rg -n "$pattern" \
     skills README.md docs/testing.md tests/claude-code tests/explicit-skill-requests \
-    >/tmp/superpowers-lite-heavy-execution.txt
+    >/tmp/superpowers-heavy-execution.txt
   then
-    cat /tmp/superpowers-lite-heavy-execution.txt >&2
+    cat /tmp/superpowers-heavy-execution.txt >&2
     fail "Heavy planning/execution language found"
   fi
 done

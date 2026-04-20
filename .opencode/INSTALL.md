@@ -10,7 +10,7 @@ Add superpowers to the `plugin` array in your `opencode.json` (global or project
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/superpowers-lite.git"]
+  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git"]
 }
 ```
 
@@ -52,7 +52,7 @@ To pin a specific version:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/superpowers-lite.git#v5.0.3"]
+  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git#v6.0.0"]
 }
 ```
 
@@ -79,5 +79,5 @@ When skills reference Claude Code tools:
 
 ## Getting Help
 
-- Report issues: https://github.com/alex-kinokon/superpowers-lite/issues
-- Full documentation: https://github.com/alex-kinokon/superpowers-lite/blob/main/docs/README.opencode.md
+- Report issues: https://github.com/alex-kinokon/reasonable-powers/issues
+- Full documentation: https://github.com/alex-kinokon/reasonable-powers/blob/main/docs/README.opencode.md

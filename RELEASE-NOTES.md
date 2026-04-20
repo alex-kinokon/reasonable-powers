@@ -1,8 +1,8 @@
 # Superpowers Release Notes
 
-## Unreleased
+## v6.0.0
 
-### Superpowers Lite Fork
+### Superpowers Fork
 
 This fork intentionally diverges from upstream Superpowers. The goal is to keep
 the useful skill workflows while reducing token burn, mandatory ceremony, and
@@ -22,7 +22,7 @@ surprising agent behavior.
   verification commands by default. Full implementation bodies are included only
   when exact content adds value.
 - **Fork-local guidance** — `CLAUDE.md`, install docs, and plugin metadata now
-  describe the lite fork and point at `alex-kinokon/superpowers-lite`.
+  describe the lite fork and point at `alex-kinokon/reasonable-powers`.
 - **Claude skills only** — legacy Claude command files were removed. Invoke
   skills directly, for example `/writing-plans` in Claude Code or by asking for
   `superpowers:writing-plans`; the old `/superpowers:write-plan` command is not

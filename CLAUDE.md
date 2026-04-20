@@ -1,4 +1,4 @@
-# Superpowers Lite — Agent Guidance
+# Superpowers — Agent Guidance
 
 This fork prioritizes low-token, proportionate workflows.
 

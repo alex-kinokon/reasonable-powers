@@ -2,13 +2,13 @@
   "name": "superpowers",
   "displayName": "Superpowers",
   "description": "Lightweight coding-agent skills for proportionate planning, TDD, debugging, and review workflows",
-  "version": "5.0.7",
+  "version": "6.0.0",
   "author": {
-    "name": "superpowers-lite maintainers",
+    "name": "Superpowers maintainers",
     "url": "https://github.com/alex-kinokon"
   },
-  "homepage": "https://github.com/alex-kinokon/superpowers-lite",
-  "repository": "https://github.com/alex-kinokon/superpowers-lite",
+  "homepage": "https://github.com/alex-kinokon/reasonable-powers",
+  "repository": "https://github.com/alex-kinokon/reasonable-powers",
   "license": "MIT",
   "keywords": [
     "skills",

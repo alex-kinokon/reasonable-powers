@@ -64,7 +64,7 @@ or search for "superpowers" in the plugin marketplace.
 Tell OpenCode:
 
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinokon/superpowers-lite/refs/heads/main/.opencode/INSTALL.md
+Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinokon/reasonable-powers/refs/heads/main/.opencode/INSTALL.md
 ```
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
@@ -72,14 +72,14 @@ Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinoko
 ### GitHub Copilot CLI
 
 ```bash
-copilot plugin marketplace add alex-kinokon/superpowers-lite-marketplace
-copilot plugin install superpowers@superpowers-marketplace
+copilot plugin marketplace add alex-kinokon/reasonable-powers-marketplace
+copilot plugin install superpowers@reasonable-powers-marketplace
 ```
 
 ### Gemini CLI
 
 ```bash
-gemini extensions install https://github.com/alex-kinokon/superpowers-lite
+gemini extensions install https://github.com/alex-kinokon/reasonable-powers
 ```
 
 To update:
@@ -158,4 +158,4 @@ MIT License - see LICENSE file for details
 
 ## Project
 
-- **Issues**: https://github.com/alex-kinokon/superpowers-lite/issues
+- **Issues**: https://github.com/alex-kinokon/reasonable-powers/issues

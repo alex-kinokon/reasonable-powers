@@ -8,7 +8,7 @@ Add superpowers to the `plugin` array in your `opencode.json` (global or project
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/superpowers-lite.git"]
+  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git"]
 }
 ```
 
@@ -84,7 +84,7 @@ To pin a specific version, use a branch or tag:
 
 ```json
 {
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/superpowers-lite.git#v5.0.3"]
+  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git#v6.0.0"]
 }
 ```
 
@@ -92,7 +92,7 @@ To pin a specific version, use a branch or tag:
 
 The plugin does two things:
 
-1. **Injects bootstrap context** via the `experimental.chat.system.transform` hook, adding superpowers awareness to every conversation.
+1. **Injects bootstrap context** via the `experimental.chat.messages.transform` hook, adding superpowers awareness to the first user message.
 2. **Registers the skills directory** via the `config` hook, so OpenCode discovers all superpowers skills without symlinks or manual config.
 
 ### Tool Mapping
@@ -125,6 +125,6 @@ Skills written for Claude Code are automatically adapted for OpenCode:
 
 ## Getting Help
 
-- Report issues: https://github.com/alex-kinokon/superpowers-lite/issues
-- Main documentation: https://github.com/alex-kinokon/superpowers-lite
+- Report issues: https://github.com/alex-kinokon/reasonable-powers/issues
+- Main documentation: https://github.com/alex-kinokon/reasonable-powers
 - OpenCode docs: https://opencode.ai/docs/
