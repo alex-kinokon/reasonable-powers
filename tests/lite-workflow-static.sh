@@ -36,6 +36,16 @@ then
 fi
 pass "Removed skill names are not referenced in active docs/tests"
 
+if [ -e commands ]; then
+  fail "legacy Claude command directory still exists"
+fi
+
+if rg -n '"commands"' .claude-plugin .cursor-plugin package.json >/tmp/superpowers-lite-command-refs.txt; then
+  cat /tmp/superpowers-lite-command-refs.txt >&2
+  fail "Plugin manifests still advertise commands"
+fi
+pass "Legacy command surface is absent"
+
 heavy_bootstrap_patterns=(
   "1% "chance
   "ABSOLUTELY "MUST

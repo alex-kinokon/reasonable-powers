@@ -1,19 +1,19 @@
 {
   "name": "superpowers-dev",
-  "description": "Development marketplace for Superpowers core skills library",
+  "description": "Development marketplace for Superpowers Lite skills",
   "owner": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "superpowers-lite maintainers",
+    "url": "https://github.com/alex-kinokon"
   },
   "plugins": [
     {
       "name": "superpowers",
-      "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+      "description": "Lightweight coding-agent skills for proportionate planning, TDD, debugging, and review workflows",
       "version": "5.0.7",
       "source": "./",
       "author": {
-        "name": "Jesse Vincent",
-        "email": "jesse@fsck.com"
+        "name": "superpowers-lite maintainers",
+        "url": "https://github.com/alex-kinokon"
       }
     }
   ]

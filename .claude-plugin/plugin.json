@@ -1,20 +1,20 @@
 {
   "name": "superpowers",
-  "description": "Core skills library for Claude Code: TDD, debugging, collaboration patterns, and proven techniques",
+  "description": "Lightweight coding-agent skills for proportionate planning, TDD, debugging, and review workflows",
   "version": "5.0.7",
   "author": {
-    "name": "Jesse Vincent",
-    "email": "jesse@fsck.com"
+    "name": "superpowers-lite maintainers",
+    "url": "https://github.com/alex-kinokon"
   },
-  "homepage": "https://github.com/obra/superpowers",
-  "repository": "https://github.com/obra/superpowers",
+  "homepage": "https://github.com/alex-kinokon/superpowers-lite",
+  "repository": "https://github.com/alex-kinokon/superpowers-lite",
   "license": "MIT",
   "keywords": [
     "skills",
     "tdd",
     "debugging",
-    "collaboration",
-    "best-practices",
+    "planning",
+    "review",
     "workflows"
   ]
 }

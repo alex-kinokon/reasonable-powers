@@ -1,5 +1,36 @@
 # Superpowers Release Notes
 
+## Unreleased
+
+### Superpowers Lite Fork
+
+This fork intentionally diverges from upstream Superpowers. The goal is to keep
+the useful skill workflows while reducing token burn, mandatory ceremony, and
+surprising agent behavior.
+
+- **Workflow triage first** — `using-superpowers`, `brainstorming`,
+  `writing-plans`, `executing-plans`, `subagent-driven-development`, and review
+  guidance now scale to task size and risk instead of pushing every request
+  through the same heavy process.
+- **Orphan skills removed** — deleted unreferenced or redundant skills:
+  `dispatching-parallel-agents`, `receiving-code-review`, and
+  `verification-before-completion`.
+- **Adaptive subagents and review** — subagents are used where isolated context
+  helps, and independent review is reserved for broad, risky, or uncertain
+  changes.
+- **Lean planning** — plans are task contracts with acceptance criteria and
+  verification commands by default. Full implementation bodies are included only
+  when exact content adds value.
+- **Fork-local guidance** — `CLAUDE.md`, install docs, and plugin metadata now
+  describe the lite fork and point at `alex-kinokon/superpowers-lite`.
+- **Claude skills only** — legacy Claude command files were removed. Invoke
+  skills directly, for example `/writing-plans` in Claude Code or by asking for
+  `superpowers:writing-plans`; the old `/superpowers:write-plan` command is not
+  part of this fork.
+- **Regression guard** — added `tests/lite-workflow-static.sh` to catch deleted
+  skill references, heavy workflow phrasing, legacy command surfaces, and
+  missing OpenCode bootstrap caching.
+
 ## v5.0.7 (2026-03-31)
 
 ### GitHub Copilot CLI Support
