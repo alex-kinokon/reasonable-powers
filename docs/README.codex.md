@@ -2,15 +2,7 @@
 
 Guide for using Superpowers with OpenAI Codex via native skill discovery.
 
-## Quick Install
-
-Tell Codex:
-
-```
-Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinokon/reasonable-powers/refs/heads/main/.codex/INSTALL.md
-```
-
-## Manual Installation
+## Installation
 
 ### Prerequisites
 
@@ -24,10 +16,10 @@ Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinoko
    git clone https://github.com/alex-kinokon/reasonable-powers.git ~/.codex/superpowers
    ```
 
-2. Create the skills symlink:
+2. Copy the skills into Codex's user skills directory:
    ```bash
-   mkdir -p ~/.agents/skills
-   ln -s ~/.codex/superpowers/skills ~/.agents/skills/superpowers
+   mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+   cp -R ~/.codex/superpowers/skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
    ```
 
 3. Restart Codex.
@@ -38,21 +30,13 @@ Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinoko
    multi_agent = true
    ```
 
-### Windows
-
-Use a junction instead of a symlink (works without Developer Mode):
-
-```powershell
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.agents\skills"
-cmd /c mklink /J "$env:USERPROFILE\.agents\skills\superpowers" "$env:USERPROFILE\.codex\superpowers\skills"
-```
-
 ## How It Works
 
-Codex has native skill discovery — it scans `~/.agents/skills/` at startup, parses SKILL.md frontmatter, and loads skills on demand. Superpowers skills are made visible through a single symlink:
+Codex has native skill discovery. User-scoped skills install under
+`$CODEX_HOME/skills`, which defaults to `~/.codex/skills`.
 
 ```
-~/.agents/skills/superpowers/ → ~/.codex/superpowers/skills/
+~/.codex/skills/<skill-name>/SKILL.md
 ```
 
 The `using-superpowers` skill is discovered automatically and enforces skill usage discipline — no additional configuration needed.
@@ -66,13 +50,13 @@ Skills are discovered automatically. Codex activates them when:
 
 ### Personal Skills
 
-Create your own skills in `~/.agents/skills/`:
+Create your own skills in `${CODEX_HOME:-$HOME/.codex}/skills/`:
 
 ```bash
-mkdir -p ~/.agents/skills/my-skill
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills/my-skill"
 ```
 
-Create `~/.agents/skills/my-skill/SKILL.md`:
+Create `${CODEX_HOME:-$HOME/.codex}/skills/my-skill/SKILL.md`:
 
 ```markdown
 ---
@@ -91,34 +75,26 @@ The `description` field is how Codex decides when to activate a skill automatica
 
 ```bash
 cd ~/.codex/superpowers && git pull
+cp -R ~/.codex/superpowers/skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Skills update instantly through the symlink.
+Restart Codex after updating.
 
 ## Uninstalling
 
 ```bash
-rm ~/.agents/skills/superpowers
+rm -rf ~/.codex/skills/{brainstorming,executing-plans,finishing-a-development-branch,requesting-code-review,subagent-driven-development,systematic-debugging,test-driven-development,using-git-worktrees,using-superpowers,writing-plans,writing-skills}
 ```
 
-**Windows (PowerShell):**
-```powershell
-Remove-Item "$env:USERPROFILE\.agents\skills\superpowers"
-```
-
-Optionally delete the clone: `rm -rf ~/.codex/superpowers` (Windows: `Remove-Item -Recurse -Force "$env:USERPROFILE\.codex\superpowers"`).
+Optionally delete the clone: `rm -rf ~/.codex/superpowers`.
 
 ## Troubleshooting
 
 ### Skills not showing up
 
-1. Verify the symlink: `ls -la ~/.agents/skills/superpowers`
-2. Check skills exist: `ls ~/.codex/superpowers/skills`
+1. Check installed skills: `ls ~/.codex/skills`
+2. Check source skills exist: `ls ~/.codex/superpowers/skills`
 3. Restart Codex — skills are discovered at startup
-
-### Windows junction issues
-
-Junctions normally work without special permissions. If creation fails, try running PowerShell as administrator.
 
 ## Getting Help
 

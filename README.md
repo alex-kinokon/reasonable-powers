@@ -24,56 +24,56 @@ planning ceremony.
 
 ## Installation
 
-**Note:** Installation differs by platform.
+This fork is installed from git. It is not published through plugin
+marketplaces.
 
 ### OpenAI Codex CLI
 
-- Open plugin search interface
+Install the skills into Codex's user skills directory, then restart Codex:
 
 ```bash
-/plugins
+git clone https://github.com/alex-kinokon/reasonable-powers.git ~/.codex/superpowers
+mkdir -p "${CODEX_HOME:-$HOME/.codex}/skills"
+cp -R ~/.codex/superpowers/skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Search for Superpowers
+To update:
 
 ```bash
-superpowers
+cd ~/.codex/superpowers
+git pull
+cp -R ~/.codex/superpowers/skills/* "${CODEX_HOME:-$HOME/.codex}/skills/"
 ```
 
-Select `Install Plugin`
+**Detailed docs:** [docs/README.codex.md](docs/README.codex.md)
 
-### OpenAI Codex App
+### Cursor
 
-- In the Codex app, click on Plugins in the sidebar.
-- You should see `Superpowers` in the Coding section.
-- Click the `+` next to Superpowers and follow the prompts.
-
-
-### Cursor (via Plugin Marketplace)
-
-In Cursor Agent chat, install from marketplace:
-
-```text
-/add-plugin superpowers
-```
-
-or search for "superpowers" in the plugin marketplace.
+Cursor plugin marketplace install is not supported for this fork. This README
+does not currently document a verified git-only Cursor install path; use one of
+the supported CLI harnesses below.
 
 ### OpenCode
 
-Tell OpenCode:
+OpenCode does not document `git+` plugin entries. Install the skills by cloning
+the repo and copying the skill directories into OpenCode's user skill path:
 
+```bash
+git clone https://github.com/alex-kinokon/reasonable-powers.git ~/.config/opencode/superpowers
+mkdir -p ~/.config/opencode/skills
+cp -R ~/.config/opencode/superpowers/skills/* ~/.config/opencode/skills/
 ```
-Fetch and follow instructions from https://raw.githubusercontent.com/alex-kinokon/reasonable-powers/refs/heads/main/.opencode/INSTALL.md
-```
+
+Restart OpenCode after installing.
 
 **Detailed docs:** [docs/README.opencode.md](docs/README.opencode.md)
 
 ### GitHub Copilot CLI
 
+Install directly from the GitHub repository:
+
 ```bash
-copilot plugin marketplace add alex-kinokon/reasonable-powers-marketplace
-copilot plugin install superpowers@reasonable-powers-marketplace
+copilot plugin install alex-kinokon/reasonable-powers
 ```
 
 ### Gemini CLI
@@ -87,6 +87,8 @@ To update:
 ```bash
 gemini extensions update superpowers
 ```
+
+Restart Gemini CLI after installing or updating extensions.
 
 ## The Basic Workflow
 

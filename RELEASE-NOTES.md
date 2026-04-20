@@ -61,7 +61,6 @@ The subagent review loop (dispatching a fresh agent to review plans/specs) doubl
 
 ### Bug Fixes
 
-- **Owner-PID lifecycle fixes** — the brainstorm server's owner-PID monitoring had two bugs causing false shutdowns within 60 seconds: (1) EPERM from cross-user PIDs (Tailscale SSH, etc.) was treated as "process dead", and (2) on WSL the grandparent PID resolves to a short-lived subprocess that exits before the first lifecycle check. Fixed by treating EPERM as "alive" and validating the owner PID at startup — if it's already dead, monitoring is disabled and the server relies on the 30-minute idle timeout. This also removes the Windows/MSYS2-specific carve-out from `start-server.sh` since the server now handles it generically. (#879)
 - **writing-skills** — corrected false claim that SKILL.md frontmatter supports "only two fields"; now says "two required fields" and links to the agentskills.io specification for all supported fields (PR #882 by @arittr)
 
 ### Codex App Compatibility
@@ -75,7 +74,6 @@ The subagent review loop (dispatching a fresh agent to review plans/specs) doubl
 ### Bug Fixes
 
 - **Brainstorm server ESM fix** — renamed `server.js` → `server.cjs` so the brainstorming server starts correctly on Node.js 22+ where the root `package.json` `"type": "module"` caused `require()` to fail. (PR #784 by @sarbojitrana, fixes #774, #780, #783)
-- **Brainstorm owner-PID on Windows** — skip PID lifecycle monitoring on Windows/MSYS2 where the PID namespace is invisible to Node.js, preventing the server from self-terminating after 60 seconds. (#770, docs from PR #768 by @lucasyhzlu-debug)
 - **stop-server.sh reliability** — verify the server process actually died before reporting success. SIGTERM + 2s wait + SIGKILL fallback. (#723)
 
 ### Changed
@@ -115,7 +113,6 @@ Dramatically reduces token usage and speeds up spec and plan reviews by eliminat
 - **Bash 5.3+ hook hang** — replaced heredoc (`cat <<EOF`) with `printf` in `hooks/session-start`. Fixes indefinite hang on macOS with Homebrew bash 5.3+ caused by a bash regression with large variable expansion in heredocs. (#572, #571)
 - **POSIX-safe hook script** — replaced `${BASH_SOURCE[0]:-$0}` with `$0` in `hooks/session-start`. Fixes "Bad substitution" error on Ubuntu/Debian where `/bin/sh` is dash. (#553)
 - **Portable shebangs** — replaced `#!/bin/bash` with `#!/usr/bin/env bash` in all shell scripts. Fixes execution on NixOS, FreeBSD, and macOS with Homebrew bash where `/bin/bash` is outdated or missing. (#700)
-- **Brainstorm server on Windows** — auto-detect Windows/Git Bash (`OSTYPE=msys*`, `MSYSTEM`) and switch to foreground mode, fixing silent server failure caused by `nohup`/`disown` process reaping. (#737)
 - **Codex docs fix** — replaced deprecated `collab` flag with `multi_agent` in Codex documentation. (PR #749)
 
 ## v5.0.2 (2026-03-11)
@@ -161,7 +158,6 @@ Dramatically reduces token usage and speeds up spec and plan reviews by eliminat
 - `GEMINI.md` @imports `using-superpowers` skill and tool mapping table at session start
 - Gemini CLI tool mapping reference (`skills/using-superpowers/references/gemini-tools.md`) — translates Claude Code tool names (Read, Write, Edit, Bash, etc.) to Gemini CLI equivalents (read_file, write_file, replace, etc.)
 - Documents Gemini CLI limitations: no subagent support, skills fall back to `executing-plans`
-- Extension root at repo root for cross-platform compatibility (avoids Windows symlink issues)
 - Install instructions added to README
 
 ### Improvements
@@ -183,11 +179,7 @@ Dramatically reduces token usage and speeds up spec and plan reviews by eliminat
 
 ### Bug Fixes
 
-**Windows/Linux: single quotes break SessionStart hook** (#577, #529, #644, PR #585)
 
-- Single quotes around `${CLAUDE_PLUGIN_ROOT}` in hooks.json fail on Windows (cmd.exe doesn't recognize single quotes as path delimiters) and on Linux (single quotes prevent variable expansion)
-- Fix: replaced single quotes with escaped double quotes — works across macOS bash, Windows cmd.exe, Windows Git Bash, and Linux, with and without spaces in paths
-- Verified on Windows 11 (NT 10.0.26200.0) with Claude Code 2.1.72 and Git for Windows
 
 **Brainstorming spec review loop skipped** (#677)
 
@@ -227,7 +219,6 @@ Dramatically reduces token usage and speeds up spec and plan reviews by eliminat
 - @karuturi — Claude Code official marketplace install instructions (PR #610)
 - @mvanhorn — session-start hook dual-emit fix, OpenCode tool mapping fix
 - @daniel-graham — linting fix for bare except
-- PR #585 author — Windows/Linux hooks quoting fix
 
 ---
 
@@ -335,17 +326,13 @@ Superpowers now works with Cursor's plugin system. Includes a `.cursor-plugin/pl
 
 ### Fixed
 
-**Windows: Restored polyglot wrapper for reliable hook execution (#518, #504, #491, #487, #466, #440)**
 
-Claude Code's `.sh` auto-detection on Windows was prepending `bash` to the hook command, breaking execution. The fix:
 
 - Renamed `session-start.sh` to `session-start` (extensionless) so auto-detection doesn't interfere
-- Restored `run-hook.cmd` polyglot wrapper with multi-location bash discovery (standard Git for Windows paths, then PATH fallback)
 - Exits silently if no bash is found rather than erroring
 - On Unix, the wrapper runs the script directly via `exec bash`
 - Uses POSIX-safe `dirname "$0"` path resolution (works on dash/sh, not just bash)
 
-This fixes SessionStart failures on Windows with spaces in paths, missing WSL, `set -euo pipefail` fragility on MSYS, and backslash mangling.
 
 ## v4.3.0 (2026-02-12)
 
@@ -379,30 +366,19 @@ Changed `async: true` to `async: false` in hooks.json. When async, the hook coul
 
 **Codex: Replaced bootstrap CLI with native skill discovery**
 
-The `superpowers-codex` bootstrap CLI, Windows `.cmd` wrapper, and related bootstrap content file have been removed. Codex now uses native skill discovery via `~/.agents/skills/superpowers/` symlink, so the old `use_skill`/`find_skills` CLI tools are no longer needed.
 
 Installation is now just clone + symlink (documented in INSTALL.md). No Node.js dependency required. The old `~/.codex/skills/` path is deprecated.
 
 ### Fixes
 
-**Windows: Fixed Claude Code 2.1.x hook execution (#331)**
 
-Claude Code 2.1.x changed how hooks execute on Windows: it now auto-detects `.sh` files in commands and prepends `bash`. This broke the polyglot wrapper pattern because `bash "run-hook.cmd" session-start.sh` tries to execute the `.cmd` file as a bash script.
 
-Fix: hooks.json now calls session-start.sh directly. Claude Code 2.1.x handles the bash invocation automatically. Also added .gitattributes to enforce LF line endings for shell scripts (fixes CRLF issues on Windows checkout).
 
-**Windows: SessionStart hook runs async to prevent terminal freeze (#404, #413, #414, #419)**
 
-The synchronous SessionStart hook blocked the TUI from entering raw mode on Windows, freezing all keyboard input. Running the hook async prevents the freeze while still injecting superpowers context.
 
-**Windows: Fixed O(n^2) `escape_for_json` performance**
 
-The character-by-character loop using `${input:$i:1}` was O(n^2) in bash due to substring copy overhead. On Windows Git Bash this took 60+ seconds. Replaced with bash parameter substitution (`${s//old/new}`) which runs each pattern as a single C-level pass — 7x faster on macOS, dramatically faster on Windows.
 
-**Codex: Fixed Windows/PowerShell invocation (#285, #243)**
 
-- Windows doesn't respect shebangs, so directly invoking the extensionless `superpowers-codex` script triggered an "Open with" dialog. All invocations now prefixed with `node`.
-- Fixed `~/` path expansion on Windows — PowerShell doesn't expand `~` when passed as an argument to `node`. Changed to `$HOME` which expands correctly in both bash and PowerShell.
 
 **Codex: Fixed path resolution in installer**
 
@@ -475,17 +451,11 @@ Superpowers for OpenCode now uses OpenCode's native `skill` tool instead of cust
 
 The previous bootstrap injection method using `session.prompt({ noReply: true })` caused OpenCode to reset the selected agent to "build" on first message. Now uses `experimental.chat.system.transform` hook which modifies the system prompt directly without side effects.
 
-**OpenCode: Fixed Windows installation (#232)**
 
 - Removed dependency on `skills-core.js` (eliminates broken relative imports when file is copied instead of symlinked)
-- Added comprehensive Windows installation docs for cmd.exe, PowerShell, and Git Bash
-- Documented proper symlink vs junction usage for each platform
 
-**Claude Code: Fixed Windows hook execution for Claude Code 2.1.x**
 
-Claude Code 2.1.x changed how hooks execute on Windows: it now auto-detects `.sh` files in commands and prepends `bash `. This broke the polyglot wrapper pattern because `bash "run-hook.cmd" session-start.sh` tries to execute the .cmd file as a bash script.
 
-Fix: hooks.json now calls session-start.sh directly. Claude Code 2.1.x handles the bash invocation automatically. Also added .gitattributes to enforce LF line endings for shell scripts (fixes CRLF issues on Windows checkout).
 
 ---
 
@@ -623,7 +593,6 @@ Description changed to imperative: "You MUST use this before any creative work�
 
 ### Fixed
 
-- **Linux Compatibility**: Fixed polyglot hook wrapper (`run-hook.cmd`) to use POSIX-compliant syntax
   - Replaced bash-specific `${BASH_SOURCE[0]:-$0}` with standard `$0` on line 16
   - Resolves "Bad substitution" error on Ubuntu/Debian systems where `/bin/sh` is dash
   - Fixes #141
@@ -701,7 +670,6 @@ Description changed to imperative: "You MUST use this before any creative work�
 
 **Experimental Codex Support**
 - Added unified `superpowers-codex` script with bootstrap/use-skill/find-skills commands
-- Cross-platform Node.js implementation (works on Windows, macOS, Linux)
 - Namespaced skills: `superpowers:skill-name` for superpowers skills, `skill-name` for personal
 - Personal skills override superpowers skills when names match
 - Clean skill display: shows name/description without raw frontmatter

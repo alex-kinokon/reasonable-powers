@@ -4,21 +4,21 @@ Complete guide for using Superpowers with [OpenCode.ai](https://opencode.ai).
 
 ## Installation
 
-Add superpowers to the `plugin` array in your `opencode.json` (global or project-level):
+Clone the repository and copy the skills into OpenCode's user skill path:
 
-```json
-{
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git"]
-}
+```bash
+git clone https://github.com/alex-kinokon/reasonable-powers.git ~/.config/opencode/superpowers
+mkdir -p ~/.config/opencode/skills
+cp -R ~/.config/opencode/superpowers/skills/* ~/.config/opencode/skills/
 ```
 
-Restart OpenCode. The plugin auto-installs via Bun and registers all skills automatically.
+Restart OpenCode. Skills load on demand through OpenCode's native `skill` tool.
 
 Verify by asking: "Tell me about your superpowers"
 
 ### Migrating from the old symlink-based install
 
-If you previously installed superpowers using `git clone` and symlinks, remove the old setup:
+If you previously installed superpowers using symlinks or a local plugin, remove the old setup:
 
 ```bash
 # Remove old symlinks
@@ -46,7 +46,7 @@ use skill tool to list skills
 ### Loading a Skill
 
 ```
-use skill tool to load superpowers/brainstorming
+use skill tool to load brainstorming
 ```
 
 ### Personal Skills
@@ -78,22 +78,21 @@ Create project-specific skills in `.opencode/skills/` within your project.
 
 ## Updating
 
-Superpowers updates automatically when you restart OpenCode. The plugin is re-installed from the git repository on each launch.
+Update the checkout and copy the skills again:
 
-To pin a specific version, use a branch or tag:
-
-```json
-{
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git#v6.0.0"]
-}
+```bash
+cd ~/.config/opencode/superpowers
+git pull
+cp -R ~/.config/opencode/superpowers/skills/* ~/.config/opencode/skills/
 ```
 
 ## How It Works
 
-The plugin does two things:
+The install copies skill directories into OpenCode's user skill path:
 
-1. **Injects bootstrap context** via the `experimental.chat.messages.transform` hook, adding superpowers awareness to the first user message.
-2. **Registers the skills directory** via the `config` hook, so OpenCode discovers all superpowers skills without symlinks or manual config.
+```
+~/.config/opencode/skills/<skill-name>/SKILL.md
+```
 
 ### Tool Mapping
 
@@ -106,22 +105,12 @@ Skills written for Claude Code are automatically adapted for OpenCode:
 
 ## Troubleshooting
 
-### Plugin not loading
-
-1. Check OpenCode logs: `opencode run --print-logs "hello" 2>&1 | grep -i superpowers`
-2. Verify the plugin line in your `opencode.json` is correct
-3. Make sure you're running a recent version of OpenCode
-
 ### Skills not found
 
 1. Use OpenCode's `skill` tool to list available skills
-2. Check that the plugin is loading (see above)
+2. Check that `~/.config/opencode/skills/brainstorming/SKILL.md` exists
 3. Each skill needs a `SKILL.md` file with valid YAML frontmatter
-
-### Bootstrap not appearing
-
-1. Check OpenCode version supports `experimental.chat.system.transform` hook
-2. Restart OpenCode after config changes
+4. Restart OpenCode after copying or updating skills
 
 ## Getting Help
 

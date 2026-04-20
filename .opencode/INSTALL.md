@@ -6,15 +6,15 @@
 
 ## Installation
 
-Add superpowers to the `plugin` array in your `opencode.json` (global or project-level):
+Clone the repository and copy the skills into OpenCode's user skill path:
 
-```json
-{
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git"]
-}
+```bash
+git clone https://github.com/alex-kinokon/reasonable-powers.git ~/.config/opencode/superpowers
+mkdir -p ~/.config/opencode/skills
+cp -R ~/.config/opencode/superpowers/skills/* ~/.config/opencode/skills/
 ```
 
-Restart OpenCode. That's it — the plugin auto-installs and registers all skills.
+Restart OpenCode. Skills load on demand through OpenCode's native `skill` tool.
 
 Verify by asking: "Tell me about your superpowers"
 
@@ -41,33 +41,26 @@ Use OpenCode's native `skill` tool:
 
 ```
 use skill tool to list skills
-use skill tool to load superpowers/brainstorming
+use skill tool to load brainstorming
 ```
 
 ## Updating
 
-Superpowers updates automatically when you restart OpenCode.
+Update the checkout and copy the skills again:
 
-To pin a specific version:
-
-```json
-{
-  "plugin": ["superpowers@git+https://github.com/alex-kinokon/reasonable-powers.git#v6.0.0"]
-}
+```bash
+cd ~/.config/opencode/superpowers
+git pull
+cp -R ~/.config/opencode/superpowers/skills/* ~/.config/opencode/skills/
 ```
 
 ## Troubleshooting
 
-### Plugin not loading
-
-1. Check logs: `opencode run --print-logs "hello" 2>&1 | grep -i superpowers`
-2. Verify the plugin line in your `opencode.json`
-3. Make sure you're running a recent version of OpenCode
-
 ### Skills not found
 
 1. Use `skill` tool to list what's discovered
-2. Check that the plugin is loading (see above)
+2. Check that `~/.config/opencode/skills/brainstorming/SKILL.md` exists
+3. Restart OpenCode after copying or updating skills
 
 ### Tool mapping
 

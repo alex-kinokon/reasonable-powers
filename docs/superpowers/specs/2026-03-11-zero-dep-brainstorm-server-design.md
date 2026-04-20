@@ -108,8 +108,6 @@ Debounce per-filename with ~100ms timeout to prevent duplicate events (common on
 ## Platform Compatibility
 
 - `server.js` uses only cross-platform Node built-ins
-- `fs.watch` is reliable for single flat directories on macOS, Linux, and Windows
-- Shell scripts require bash (Git Bash on Windows, which is required for Claude Code)
 
 ## Testing
 

@@ -822,14 +822,14 @@ Iterate based on these observations rather than assumptions. The 'name' and 'des
 
 ## Anti-patterns to avoid
 
-### Avoid Windows-style paths
+### Avoid backslash paths
 
-Always use forward slashes in file paths, even on Windows:
+Always use forward slashes in file paths:
 
 * ✓ **Good**: `scripts/helper.py`, `reference/guide.md`
 * ✗ **Avoid**: `scripts\helper.py`, `reference\guide.md`
 
-Unix-style paths work across all platforms, while Windows-style paths cause errors on Unix systems.
+Forward-slash paths are easier for agents to use reliably.
 
 ### Avoid offering too many options
 
@@ -1122,7 +1122,7 @@ Before sharing a Skill, verify:
 * [ ] No "voodoo constants" (all values justified)
 * [ ] Required packages listed in instructions and verified as available
 * [ ] Scripts have clear documentation
-* [ ] No Windows-style paths (all forward slashes)
+* [ ] No backslash paths
 * [ ] Validation/verification steps for critical operations
 * [ ] Feedback loops included for quality-critical tasks
 
