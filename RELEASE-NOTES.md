@@ -1,5 +1,9 @@
 # Superpowers Release Notes
 
+## v6.0.1
+
+- Adds a checkpoint before execution in `writing-plans`.
+
 ## v6.0.0
 
 ### Superpowers Fork

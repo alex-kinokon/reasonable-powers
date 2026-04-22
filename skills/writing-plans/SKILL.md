@@ -164,10 +164,15 @@ After writing the complete plan, look at the spec with fresh eyes and check the 
 
 If you find issues, fix them inline and move on. If you find a spec requirement with no task, add the task.
 
+## User Review
+
+After saving the plan, ask the user to review the plan and modify it if necessary. If you have open questions
+or are unsure about certain requirements or specifics, this is a good time to ask. Wait until the user
+explicitly approves or declines your plan.
+
 ## Execution Handoff
 
-After saving the plan, offer an execution choice that reflects task size and any
-project/user preferences:
+After user approval, offer an execution choice that reflects task size and any project/user preferences:
 
 **"Plan complete and saved to `docs/superpowers/plans/<filename>.md`. Suggested execution: [inline/subagent] because [reason]. Options:**
 
