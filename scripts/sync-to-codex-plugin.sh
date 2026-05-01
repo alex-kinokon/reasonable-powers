@@ -3,9 +3,10 @@
 # sync-to-codex-plugin.sh
 #
 # Sync this superpowers checkout → prime-radiant-inc/openai-codex-plugins.
-# Clones the fork fresh into a temp dir, rsyncs upstream content, regenerates
-# the Codex overlay file (.codex-plugin/plugin.json) inline, commits, pushes a
-# sync branch, and opens a PR.
+# Clones the fork fresh into a temp dir, rsyncs upstream content while
+# preserving OpenAI-owned marketplace metadata already in the destination
+# plugin, regenerates the Codex overlay file (.codex-plugin/plugin.json)
+# inline, commits, pushes a sync branch, and opens a PR.
 # Path/user agnostic — auto-detects upstream from script location.
 #
 # Deterministic: running twice against the same upstream SHA produces PRs with
@@ -243,6 +244,7 @@ else
 fi
 
 DEST="$DEST_REPO/$DEST_REL"
+SYNC_SOURCE="$UPSTREAM"
 
 # Checkout base branch
 cd "$DEST_REPO"
@@ -275,6 +277,36 @@ git checkout -q -b "$SYNC_BRANCH"
 RSYNC_ARGS=(-av --delete)
 for pat in "${EXCLUDES[@]}"; do RSYNC_ARGS+=(--exclude="$pat"); done
 
+copy_preserved_destination_metadata() {
+  local destination="$1"
+  local source="$2"
+  local path
+  local rel
+
+  [[ -d "$destination/skills" ]] || return 0
+
+  while IFS= read -r -d '' path; do
+    rel="${path#"$destination"/}"
+    mkdir -p "$source/$(dirname "$rel")"
+    cp -p "$path" "$source/$rel"
+  done < <(find "$destination/skills" -path '*/agents/openai.yaml' -type f -print0)
+}
+
+prepare_sync_source() {
+  local destination="$1"
+
+  [[ -n "$CLEANUP_DIR" ]] || CLEANUP_DIR="$(mktemp -d)"
+
+  SYNC_SOURCE="$CLEANUP_DIR/source-overlay"
+  rm -rf "$SYNC_SOURCE"
+  mkdir -p "$SYNC_SOURCE"
+
+  rsync "${RSYNC_ARGS[@]}" "$UPSTREAM/" "$SYNC_SOURCE/" >/dev/null
+  copy_preserved_destination_metadata "$destination" "$SYNC_SOURCE"
+}
+
+prepare_sync_source "$DEST"
+
 # =============================================================================
 # Dry run preview (always shown)
 # =============================================================================
@@ -291,7 +323,7 @@ if [[ $BOOTSTRAP -eq 1 ]]; then
 fi
 echo ""
 echo "=== Preview (rsync --dry-run) ==="
-rsync "${RSYNC_ARGS[@]}" --dry-run --itemize-changes "$UPSTREAM/" "$DEST/"
+rsync "${RSYNC_ARGS[@]}" --dry-run --itemize-changes "$SYNC_SOURCE/" "$DEST/"
 echo "=== End preview ==="
 echo ""
 echo "Overlay file (.codex-plugin/plugin.json) will be regenerated with"
@@ -316,7 +348,7 @@ confirm "Apply changes, push branch, and open PR?" || { echo "Aborted."; exit 1;
 
 echo ""
 echo "Syncing upstream content..."
-rsync "${RSYNC_ARGS[@]}" "$UPSTREAM/" "$DEST/"
+rsync "${RSYNC_ARGS[@]}" "$SYNC_SOURCE/" "$DEST/"
 
 if [[ $BOOTSTRAP -eq 1 ]]; then
   echo "Seeding brand assets..."
@@ -357,6 +389,8 @@ else
 
 Run via: \`scripts/sync-to-codex-plugin.sh\`
 Upstream commit: https://github.com/alex-kinokon/reasonable-powers/commit/$UPSTREAM_SHA
+
+Preserves OpenAI-owned marketplace metadata already present in the destination plugin.
 
 Running the sync tool again against the same upstream SHA should produce a PR with an identical diff — use that to verify the tool is behaving."
 fi
